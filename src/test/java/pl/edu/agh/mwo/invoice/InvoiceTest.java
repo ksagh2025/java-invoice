@@ -1,13 +1,15 @@
 package pl.edu.agh.mwo.invoice;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import pl.edu.agh.mwo.invoice.Invoice;
 import pl.edu.agh.mwo.invoice.product.DairyProduct;
 import pl.edu.agh.mwo.invoice.product.OtherProduct;
 import pl.edu.agh.mwo.invoice.product.Product;
@@ -125,4 +127,79 @@ public class InvoiceTest {
     public void testAddingNullProduct() {
         invoice.addProduct(null);
     }
+
+    //0. Testy dla numeru faktury
+    @Test
+    public void testInvoiceNumberNotNull(){
+        //sprawdzam czy numer faktury nie zwraca NULLA
+        Assert.assertNotNull(invoice.getNumber());
+    }
+
+    @Test
+    public void testInvoiceReturnedType(){
+        Assert.assertTrue(invoice.getNumber() instanceof String);
+    }
+
+    @Test
+    public void testInvoiceFormat(){
+        String todayDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String regex = "^FV/\\d{8}/\\d{6}$";
+        String invoicenumber = invoice.getNumber();
+
+        Assert.assertTrue(invoicenumber.matches(regex));
+    }
+
+    @Test
+    public void testPrintFormatNoOfLines(){
+        Product onions = new TaxFreeProduct("Warzywa", new BigDecimal("10"));
+        Product apples = new TaxFreeProduct("Owoce", new BigDecimal("10"));
+        invoice.addProduct(onions,5);
+        invoice.addProduct(apples,3);
+
+        String printTest = invoice.getPrint();
+        long noOfLines = printTest.lines().count();
+
+        Assert.assertEquals(4, noOfLines);
+    }
+
+    @Test
+    public void testPrintFormat1stLine(){
+        Product onions = new TaxFreeProduct("Warzywa", new BigDecimal("10"));
+        Product apples = new TaxFreeProduct("Owoce", new BigDecimal("10"));
+        invoice.addProduct(onions,5);
+        invoice.addProduct(apples,3);
+
+        String printTest = invoice.getPrint();
+        String regex = "(?s)^FV/\\d{8}/\\d{6}\\n.*";
+
+        Assert.assertTrue(printTest.matches(regex));
+    }
+
+    @Test
+    public void testPrintFormatLastLine(){
+        Product onions = new TaxFreeProduct("Warzywa", new BigDecimal("10"));
+        Product apples = new TaxFreeProduct("Owoce", new BigDecimal("10"));
+        invoice.addProduct(onions,5);
+        invoice.addProduct(apples,3);
+
+        String printTest = invoice.getPrint();
+        String regex = "(?s).*Liczba pozycji: 2";
+
+        Assert.assertTrue(printTest.matches(regex));
+    }
+
+    @Test
+    public void testPrintFormatProducts(){
+        Product onions = new TaxFreeProduct("Warzywa", new BigDecimal("10"));
+        Product apples = new TaxFreeProduct("Owoce", new BigDecimal("10"));
+        invoice.addProduct(onions,5);
+        invoice.addProduct(apples,3);
+
+        String printTest = invoice.getPrint();
+
+        Assert.assertTrue(printTest.contains("Warzywa;5;10\n"));
+        Assert.assertTrue(printTest.contains("Owoce;3;10\n"));
+    }
+
 }
+
