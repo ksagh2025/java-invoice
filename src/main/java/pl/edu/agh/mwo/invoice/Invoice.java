@@ -42,7 +42,9 @@ public class Invoice {
         if (product == null || quantity <= 0) {
             throw new IllegalArgumentException();
         }
-        products.put(product, quantity);
+
+        products.merge(product, quantity, Integer::sum);
+
     }
 
     public BigDecimal getNetTotal() {

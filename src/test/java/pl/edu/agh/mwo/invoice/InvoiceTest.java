@@ -201,5 +201,31 @@ public class InvoiceTest {
         Assert.assertTrue(printTest.contains("Owoce;3;10\n"));
     }
 
+    @Test
+    public void testAddSameProductSumQuantity(){
+        Product onions = new TaxFreeProduct("Warzywa", new BigDecimal("10"));
+        invoice.addProduct(onions);
+        invoice.addProduct(onions);
+        invoice.addProduct(onions,4);
+
+        String printTest = invoice.getPrint();
+
+        Assert.assertTrue(printTest.contains("Warzywa;6;10\n"));
+    }
+
+    @Test
+    public void testAddSameProductCheckNoOfProducts(){
+        Product onions = new TaxFreeProduct("Warzywa", new BigDecimal("10"));
+        invoice.addProduct(onions);
+        invoice.addProduct(onions);
+        invoice.addProduct(onions,4);
+
+        String printTest = invoice.getPrint();
+        String regex = "(?s).*Liczba pozycji: 1";
+
+        Assert.assertTrue(printTest.matches(regex));
+    }
+
+
 }
 
