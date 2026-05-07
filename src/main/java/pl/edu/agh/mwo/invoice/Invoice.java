@@ -13,19 +13,25 @@ public class Invoice {
 
     private final String number = "FV/20260505/123456";
 
-    public String getNumber(){
+    public String getNumber() {
         return number;
     }
 
-    public String getPrint(){
-        String print = this.getNumber()+"\n";
-        for (Product product: products.keySet() ){
-            print = print + product.getName() + ";" + products.get(product) +";"+ product.getPrice() + "\n";
+    public String getPrint() {
+        String print = this.getNumber() + "\n";
+        for (Product product: products.keySet()) {
+            print = print
+                    + product.getName()
+                    + ";"
+                    + products.get(product)
+                    + ";"
+                    + product.getPrice()
+                    + "\n";
         }
         print = print + "Liczba pozycji: " + products.size();
 
         return print;
-        //return   "FV/20260505/123456\n" + "mleko;2;10\n" + "ziemniaki;5;8\n" + "Liczba pozycji: 2";
+
     }
 
     public void addProduct(Product product) {
