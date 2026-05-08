@@ -6,7 +6,7 @@ public class FuelCanister extends Product {
     private BigDecimal akcyza = new BigDecimal("5.56");
 
     public FuelCanister(String name, BigDecimal price) {
-        super(name, price, new BigDecimal("0.08"));
+        super(name, price, BigDecimal.ZERO);
     }
 
     public BigDecimal getPriceWithTax() {

@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import pl.edu.agh.mwo.invoice.product.Product;
 
@@ -12,7 +13,7 @@ public class Invoice {
     private Map<Product, Integer> products = new HashMap<Product, Integer>();
 
 
-    private final String number = "FV/20260505/123456";
+    private final String number = generateFvNumber();
 
     public String getNumber() {
         return number;
@@ -68,5 +69,17 @@ public class Invoice {
             totalGross = totalGross.add(product.getPriceWithTax().multiply(quantity));
         }
         return totalGross;
+    }
+
+    private String generateFvNumber() {
+        //tymczasowy placeholder dla generowania nr faktury w danym formacie;
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String datastr = today.format(format);
+        Random rand = new Random();
+        final int fvEndNumberScopeForRand = 1_000_000;
+        String sixDigits = String.format("%06d", rand.nextInt(fvEndNumberScopeForRand));
+
+        return "FV/" + datastr + "/" + sixDigits;
     }
 }

@@ -125,10 +125,9 @@ public class InvoiceTest {
         invoice.addProduct(null);
     }
 
-    //0. Testy dla numeru faktury
+    //0. Numer faktury ---------------------------------------------------------------
     @Test
     public void testInvoiceNumberNotNull() {
-        //sprawdzam czy numer faktury nie zwraca NULLA
         Assert.assertNotNull(invoice.getNumber());
     }
 
@@ -146,10 +145,11 @@ public class InvoiceTest {
         Assert.assertTrue(invoicenumber.matches(regex));
     }
 
+    //1. Drukowanie--------------------------------------------------------------------
     @Test
     public void testPrintFormatNoOfLines() {
         Product onions = new TaxFreeProduct("Warzywa", new BigDecimal("10"));
-        Product apples = new TaxFreeProduct("Owoce", new BigDecimal("10"));
+        Product apples = new TaxFreeProduct("Owoce", new BigDecimal("15"));
         invoice.addProduct(onions, 5);
         invoice.addProduct(apples, 3);
 
@@ -187,17 +187,18 @@ public class InvoiceTest {
 
     @Test
     public void testPrintFormatProducts() {
-        Product onions = new TaxFreeProduct("Warzywa", new BigDecimal("10"));
+        Product onions = new TaxFreeProduct("Warzywa", new BigDecimal("14"));
         Product apples = new TaxFreeProduct("Owoce", new BigDecimal("10"));
         invoice.addProduct(onions, 5);
-        invoice.addProduct(apples, 3);
+        invoice.addProduct(apples, 4);
 
         String printTest = invoice.getPrint();
 
-        Assert.assertTrue(printTest.contains("Warzywa;5;10\n"));
-        Assert.assertTrue(printTest.contains("Owoce;3;10\n"));
+        Assert.assertTrue(printTest.contains("Warzywa;5;14\n"));
+        Assert.assertTrue(printTest.contains("Owoce;4;10\n"));
     }
 
+    //2. Duplikaty produktów-------------------------------------------------------------
     @Test
     public void testAddSameProductSumQuantity() {
         Product onions = new TaxFreeProduct("Warzywa", new BigDecimal("10"));
@@ -223,18 +224,19 @@ public class InvoiceTest {
         Assert.assertTrue(printTest.matches(regex));
     }
 
+    //3.Produkty akcyzowe ------------------------------------------------------------------------
     @Test
     public void testBottleOfWine() {
         Product wino = new BottleofWine("Wino", new BigDecimal("94.44"));
         invoice.addProduct(wino);
-        Assert.assertThat(new BigDecimal("123"), Matchers.comparesEqualTo(invoice.getGrossTotal()));
+        Assert.assertThat(new BigDecimal("123"), Matchers.comparesEqualTo(wino.getPriceWithTax()));
     }
 
     @Test
     public void testFuelCanister() {
-        Product diesel = new FuelCanister("paliwo", new BigDecimal("94.44"));
+        Product diesel = new FuelCanister("paliwo", new BigDecimal("100"));
         invoice.addProduct(diesel);
-        Assert.assertThat(new BigDecimal("108"), Matchers.comparesEqualTo(invoice.getGrossTotal()));
+        Assert.assertThat(new BigDecimal("105.56"), Matchers.comparesEqualTo(diesel.getPriceWithTax()));
     }
 }
 
