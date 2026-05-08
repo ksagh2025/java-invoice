@@ -223,20 +223,6 @@ public class InvoiceTest {
         Assert.assertTrue(printTest.matches(regex));
     }
 
-    //3.Produkty akcyzowe ------------------------------------------------------------------------
-    @Test
-    public void testBottleOfWine() {
-        Product wino = new BottleofWine("Wino", new BigDecimal("94.44"));
-        invoice.addProduct(wino);
-        Assert.assertThat(new BigDecimal("123"), Matchers.comparesEqualTo(wino.getPriceWithTax()));
-    }
-
-    @Test
-    public void testFuelCanister() {
-        Product diesel = new FuelCanister("paliwo", new BigDecimal("100"));
-        invoice.addProduct(diesel);
-        Assert.assertThat(new BigDecimal("105.56"), Matchers.comparesEqualTo(diesel.getPriceWithTax()));
-    }
 }
 
 
