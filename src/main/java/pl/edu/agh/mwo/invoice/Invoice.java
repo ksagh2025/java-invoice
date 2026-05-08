@@ -11,6 +11,7 @@ import pl.edu.agh.mwo.invoice.product.Product;
 public class Invoice {
     private Map<Product, Integer> products = new HashMap<Product, Integer>();
 
+
     private final String number = "FV/20260505/123456";
 
     public String getNumber() {

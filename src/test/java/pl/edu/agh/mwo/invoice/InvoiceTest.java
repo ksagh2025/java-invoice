@@ -10,10 +10,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import pl.edu.agh.mwo.invoice.product.DairyProduct;
-import pl.edu.agh.mwo.invoice.product.OtherProduct;
-import pl.edu.agh.mwo.invoice.product.Product;
-import pl.edu.agh.mwo.invoice.product.TaxFreeProduct;
+import pl.edu.agh.mwo.invoice.product.*;
 
 public class InvoiceTest {
     private Invoice invoice;
@@ -130,18 +127,18 @@ public class InvoiceTest {
 
     //0. Testy dla numeru faktury
     @Test
-    public void testInvoiceNumberNotNull(){
+    public void testInvoiceNumberNotNull() {
         //sprawdzam czy numer faktury nie zwraca NULLA
         Assert.assertNotNull(invoice.getNumber());
     }
 
     @Test
-    public void testInvoiceReturnedType(){
+    public void testInvoiceReturnedType() {
         Assert.assertTrue(invoice.getNumber() instanceof String);
     }
 
     @Test
-    public void testInvoiceFormat(){
+    public void testInvoiceFormat() {
         String todayDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         String regex = "^FV/\\d{8}/\\d{6}$";
         String invoicenumber = invoice.getNumber();
@@ -150,11 +147,11 @@ public class InvoiceTest {
     }
 
     @Test
-    public void testPrintFormatNoOfLines(){
+    public void testPrintFormatNoOfLines() {
         Product onions = new TaxFreeProduct("Warzywa", new BigDecimal("10"));
         Product apples = new TaxFreeProduct("Owoce", new BigDecimal("10"));
-        invoice.addProduct(onions,5);
-        invoice.addProduct(apples,3);
+        invoice.addProduct(onions, 5);
+        invoice.addProduct(apples, 3);
 
         String printTest = invoice.getPrint();
         long noOfLines = printTest.lines().count();
@@ -163,11 +160,11 @@ public class InvoiceTest {
     }
 
     @Test
-    public void testPrintFormat1stLine(){
+    public void testPrintFormat1stLine() {
         Product onions = new TaxFreeProduct("Warzywa", new BigDecimal("10"));
         Product apples = new TaxFreeProduct("Owoce", new BigDecimal("10"));
-        invoice.addProduct(onions,5);
-        invoice.addProduct(apples,3);
+        invoice.addProduct(onions, 5);
+        invoice.addProduct(apples, 3);
 
         String printTest = invoice.getPrint();
         String regex = "(?s)^FV/\\d{8}/\\d{6}\\n.*";
@@ -176,11 +173,11 @@ public class InvoiceTest {
     }
 
     @Test
-    public void testPrintFormatLastLine(){
+    public void testPrintFormatLastLine() {
         Product onions = new TaxFreeProduct("Warzywa", new BigDecimal("10"));
         Product apples = new TaxFreeProduct("Owoce", new BigDecimal("10"));
-        invoice.addProduct(onions,5);
-        invoice.addProduct(apples,3);
+        invoice.addProduct(onions, 5);
+        invoice.addProduct(apples, 3);
 
         String printTest = invoice.getPrint();
         String regex = "(?s).*Liczba pozycji: 2";
@@ -189,11 +186,11 @@ public class InvoiceTest {
     }
 
     @Test
-    public void testPrintFormatProducts(){
+    public void testPrintFormatProducts() {
         Product onions = new TaxFreeProduct("Warzywa", new BigDecimal("10"));
         Product apples = new TaxFreeProduct("Owoce", new BigDecimal("10"));
-        invoice.addProduct(onions,5);
-        invoice.addProduct(apples,3);
+        invoice.addProduct(onions, 5);
+        invoice.addProduct(apples, 3);
 
         String printTest = invoice.getPrint();
 
@@ -202,11 +199,11 @@ public class InvoiceTest {
     }
 
     @Test
-    public void testAddSameProductSumQuantity(){
+    public void testAddSameProductSumQuantity() {
         Product onions = new TaxFreeProduct("Warzywa", new BigDecimal("10"));
         invoice.addProduct(onions);
         invoice.addProduct(onions);
-        invoice.addProduct(onions,4);
+        invoice.addProduct(onions, 4);
 
         String printTest = invoice.getPrint();
 
@@ -214,11 +211,11 @@ public class InvoiceTest {
     }
 
     @Test
-    public void testAddSameProductCheckNoOfProducts(){
+    public void testAddSameProductCheckNoOfProducts() {
         Product onions = new TaxFreeProduct("Warzywa", new BigDecimal("10"));
         invoice.addProduct(onions);
         invoice.addProduct(onions);
-        invoice.addProduct(onions,4);
+        invoice.addProduct(onions, 4);
 
         String printTest = invoice.getPrint();
         String regex = "(?s).*Liczba pozycji: 1";
@@ -226,6 +223,19 @@ public class InvoiceTest {
         Assert.assertTrue(printTest.matches(regex));
     }
 
+    @Test
+    public void testBottleOfWine() {
+        Product wino = new BottleofWine("Wino", new BigDecimal("94.44"));
+        invoice.addProduct(wino);
+        Assert.assertThat(new BigDecimal("123"), Matchers.comparesEqualTo(invoice.getGrossTotal()));
+    }
 
+    @Test
+    public void testFuelCanister() {
+        Product diesel = new FuelCanister("paliwo", new BigDecimal("94.44"));
+        invoice.addProduct(diesel);
+        Assert.assertThat(new BigDecimal("108"), Matchers.comparesEqualTo(invoice.getGrossTotal()));
+    }
 }
+
 
