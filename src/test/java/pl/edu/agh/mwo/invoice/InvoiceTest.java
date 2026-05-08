@@ -138,7 +138,6 @@ public class InvoiceTest {
 
     @Test
     public void testInvoiceFormat() {
-        String todayDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         String regex = "^FV/\\d{8}/\\d{6}$";
         String invoicenumber = invoice.getNumber();
 
